@@ -14,8 +14,13 @@
 ## A tener en cuenta
 
 > Si la ip asignada a la subinterfaz esta siendo utilizada por un equipo activo dentro del segmento de red que va a escanear el script, el escaneo fallará en dicho segmento, en el caso de fallar en un rango de ips muy comunmente utilizado como 192.168.x.x, modificar el array de ips colocándole una ip diferente pero en el mismo rango
-> Esta herramienta requiere arp-scan batcat y moreutils
 > Mientras mas grande la máscara de subred mas demorará el escaneo
+
+## Requerimientos
+- batcat
+- moreutils
+- arp-scan
+  
 ## Descargar la herramienta
 ```bash
 	git clone https://github.com/SebSecRepos/SubNetDiscovery.git
