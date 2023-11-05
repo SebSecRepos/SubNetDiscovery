@@ -10,7 +10,7 @@ purpleColour="\e[0;35m\033[1m"
 turquoiseColour="\e[0;36m\033[1m"
 grayColour="\e[0;37m\033[1m"
 selectedIface=""
-setIps=('192.168.0.254' '172.16.0.254' '10.0.0.254' )
+setIps=('192.168.0.253' '172.16.0.253' '10.0.0.253' '3.3.3.253')
 setNetmask='255.255.0.0'
 
     # Helpanel
@@ -124,12 +124,11 @@ setNetmask='255.255.0.0'
     function analyze(){
         ip=$(ifconfig | grep -C 1 "$selectedIface:$1" | grep inet | awk '{print $2}' )
         netmask=$(ifconfig | grep -C 1 "$selectedIface:$1" | grep inet | awk '{print $4}')
-        ipcalc=$(ipcalc $(ip addr show | grep $selectedIface:$1 | grep inet | awk '{print $2}'))
-        networkId=$(echo "$ipcalc" | grep Network | awk '{print $2}')
-        broadcast=$(echo "$ipcalc" | grep Broadcast | awk '{print $2}')
+        cidr=$(ip addr | grep -C 1 "$selectedIface:$1" | grep inet | awk '{print $2}' | awk '{print $2}' FS='/') 
+        networkId=$(cat /proc/net/fib_trie | grep -B 3 $ip | grep -vE '\+--|UNICAST|host' | sort -u | awk '{print $2}' | head -n 1)
 
         if [[ "$ip" == "$2" ]] && [[ "$netmask" == "$3" ]]; then 
-            echo -e "\n[+] ${greenColour}$selectedIface:$1${endColour} up Iniciando reconocimiento de rango ${purpleColour} $networkId ${redColour}/${purpleColour} $broadcast ${endColour}\n"
+            echo -e "\n[+] ${greenColour}$selectedIface:$1${endColour} up Iniciando reconocimiento de rango ${purpleColour} $networkId ${redColour}/$cidr${purpleColour} $broadcast ${endColour}\n"
             (/usr/sbin/arp-scan -I "$selectedIface:$1" -t 1 --localnet --ignoredups >> ./escaneo.txt) &
             sleep 2
 
